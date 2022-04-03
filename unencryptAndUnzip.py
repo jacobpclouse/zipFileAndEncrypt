@@ -99,6 +99,29 @@ def unzip_after_decrypt(what_decrypted_output_zip_is_named):
     # print out success unzip
     print('Zip File unzipped successfully!')
 
+
+# --
+
+
+# Delete local files besides key and encrypted zip
+#def clean_up_files(local_folder,zipped_folder):
+def clean_up_files(zipped_folder):
+
+    # removing 'encrypted_' prefix, adding 'decrypted_' prefix
+    file_to_delete = f'decrypted_{zipped_folder[10:]}.zip'
+
+    # delete zipped file 
+    os.remove(file_to_delete)
+
+    ##delete directory
+    ##os.remove(local_folder)
+    # can't delete local directory: permission denied
+
+    # print out successful cleanup
+    print('Cleanup Completed successfully!')
+
+# --
+
 # -=-=-=-=-=-=-=-
 ## Main Program
 # -=-=-=-=-=-=-=-
@@ -116,6 +139,9 @@ def main():
 
     # unzipping decrypted zip file
     unzip_after_decrypt(what_output_zip_is_named)
+
+    # clean up zip after decrypt
+    clean_up_files(what_output_zip_is_named)
 
 if __name__ == "__main__":
 	main()
