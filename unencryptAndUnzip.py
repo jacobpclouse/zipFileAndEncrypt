@@ -44,7 +44,7 @@ def get_all_file_paths(inputDirectory):
 # --
 
 
-# Decrypting function
+# Decrypting and unzipping
 def decrypt_zip_file(zip_file_name):
 
     # signal start of decryption
@@ -64,15 +64,38 @@ def decrypt_zip_file(zip_file_name):
     # decrypting the file
     decrypted = fernet.decrypt(encrypted)
 
-    # opening the file in write mode and
-    # writing the decrypted data
+    # removing 'encrypted_' prefix
     decrypted_file_name_out = zip_file_name[10:]
+
+    # opening the file in write mode and writing the decrypted data
     with open(f'decrypted_{decrypted_file_name_out}.zip', 'wb') as dec_file:
 	    dec_file.write(decrypted)
 
     # print out success decryption
     print('Zip File decrypted successfully!')
 
+
+# ---
+
+
+# Unzip function
+def unzip_after_decrypt(what_decrypted_output_zip_is_named):
+
+    # removing 'encrypted_' prefix, adding 'decrypted_' prefix
+    unpack_decrypted_file_name_out = f'decrypted_{what_decrypted_output_zip_is_named[10:]}'
+
+    # opening the zip file in READ mode
+    with ZipFile(f'{unpack_decrypted_file_name_out}.zip', 'r') as zip:
+
+        # printing all the contents of the zip file
+        zip.printdir()
+  
+        # extracting all the files
+        print('Unzipping....')
+        zip.extractall()
+
+    # print out success unzip
+    print('Zip File unzipped successfully!')
 
 # -=-=-=-=-=-=-=-
 ## Main Program
@@ -88,6 +111,9 @@ def main():
 
     # executing decryption function
     decrypt_zip_file(what_output_zip_is_named)
+
+    # unzipping decrypted zip file
+    unzip_after_decrypt(what_output_zip_is_named)
 
 if __name__ == "__main__":
 	main()
