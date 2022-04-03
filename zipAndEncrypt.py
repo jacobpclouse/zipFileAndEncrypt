@@ -50,7 +50,7 @@ def create_zip_file(zip_file_output_name, input_file_paths):
         for file in input_file_paths:
             zip.write(file)
 
-    # print out success
+    # print out success zip
     print('All files zipped successfully!')
 
 
@@ -67,6 +67,8 @@ def create_key(zip_file_output_name_key):
     with open(f'{zip_file_output_name_key}.key', 'wb') as filekey:
         filekey.write(key)
 
+    # print out success key creation
+    print('Key created successfully!')
 
 # --
 
@@ -74,6 +76,9 @@ def create_key(zip_file_output_name_key):
 # encrypt file with previously generated key
 # need to pass the prexisiting user filename var to this function
 def encrypt_zip_with_key(zip_file_output_name_for_encryption):
+
+    # signal start of encryption
+    print('Encrypting....')
 
     # opening the key
     with open(f'{zip_file_output_name_for_encryption}.key', 'rb') as filekey:
@@ -94,6 +99,9 @@ def encrypt_zip_with_key(zip_file_output_name_for_encryption):
     # writing the encrypted data
     with open(f'encrypted_{zip_file_output_name_for_encryption}.zip', 'wb') as encrypted_file:
         encrypted_file.write(encrypted)
+
+    # print out success encryption
+    print('Zip File encrypted successfully!')
 
 
 # --
