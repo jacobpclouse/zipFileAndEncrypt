@@ -64,7 +64,7 @@ def create_key(zip_file_output_name_key):
     key = Fernet.generate_key()
   
     # string the key in a file
-    with open(f'{zip_file_output_name_key}.key', 'wb') as filekey:
+    with open(f'encrypted_{zip_file_output_name_key}.key', 'wb') as filekey:
         filekey.write(key)
 
     # print out success key creation
@@ -81,7 +81,7 @@ def encrypt_zip_with_key(zip_file_output_name_for_encryption):
     print('Encrypting....')
 
     # opening the key
-    with open(f'{zip_file_output_name_for_encryption}.key', 'rb') as filekey:
+    with open(f'encrypted_{zip_file_output_name_for_encryption}.key', 'rb') as filekey:
         key = filekey.read()
   
     # using the generated key
