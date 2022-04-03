@@ -18,7 +18,8 @@ from zipfile import ZipFile
 import os
 # encryption modules
 from cryptography.fernet import Fernet
-
+# copying Files
+import shutil
 
 # -=-=-=-=-=-=-=-
 ## Functions
