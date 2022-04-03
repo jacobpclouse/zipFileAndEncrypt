@@ -17,6 +17,7 @@ import os
 from cryptography.fernet import Fernet
 # copying Files
 import shutil
+import os.path
 
 # -=-=-=-=-=-=-=-
 ## Functions
@@ -108,23 +109,68 @@ def encrypt_zip_with_key(zip_file_output_name_for_encryption):
 # --
 
 
-# -=-=-=-=-=-=-=-
-## Variables
-# -=-=-=-=-=-=-=-
+# Copy folder to zip to program local directory
+def copy_to_local_folder(directory_to_move_from,directory_to_create):
 
+    # make dir with user folder
+    os.mkdir(directory_to_create)
+    print("Directory '% s' created" % directory_to_create)
+
+    # grabbing all files from source directory
+    files=os.listdir(directory_to_move_from)
+   
+    # iterating over all the files in
+    # the source directory
+    for fname in files:
+        
+        # copying the files to the
+        # destination directory
+        shutil.copy2(os.path.join(directory_to_move_from,fname), directory_to_create)
+
+    # print out successful local copy
+    print('Created Local Copy successfully!')
+  
+
+# --
+
+
+# Delete local files besides key and encrypted zip
+#def clean_up_files(local_folder,zipped_folder):
+def clean_up_files(zipped_folder):
+
+    # delete zipped file 
+    os.remove(f"{zipped_folder}.zip")
+
+    ##delete directory
+    ##os.remove(local_folder)
+    # can't delete local directory: permission denied
+
+    # print out successful cleanup
+    print('Cleanup Completed successfully!')
 
 # -=-=-=-=-=-=-=-
 ## Main Program
 # -=-=-=-=-=-=-=-
 
 def main():
-	# path to folder which needs to be zipped
-    # NEED TO GIVE FULL PATH or HAVE PROGRAM IN THE SAME DIRECTORY AS THE PYTHON PROGRAM
-    ## do NOT use full path unless you want it to store every folder along the way, need to have the program cd into last folder location then extract it
-    directory = input('EnterPath: ')
+    # have user name directory to store zip files locally
+    userDirectory = input('Name directory to contain zip: ')
 
-	# calling function to get all file paths in the directory
-    file_paths = get_all_file_paths(directory)
+	# path to folder which needs to be zipped
+    # NEED TO GIVE FULL PATH
+    originalPath = input('Enter Full Path of original files: ')
+
+    # Parent Directory path
+    parent_dir = "./"
+
+    # Path
+    fullUserPath = os.path.join(parent_dir, userDirectory)
+
+    # copying files locally
+    copy_to_local_folder(originalPath,fullUserPath)
+
+	# calling function to get all file paths in the directory (CHANGE TO LOCAL DIR)
+    file_paths = get_all_file_paths(fullUserPath)
 
 	# printing the list of all files to be zipped
     print('Following files will be zipped:')
@@ -142,6 +188,11 @@ def main():
 
     # encrypting zip file
     encrypt_zip_with_key(what_output_zip_is_named)
+
+    # deleting local files
+    clean_up_files(what_output_zip_is_named)
+    # clean_up_files(fullUserPath,what_output_zip_is_named)
+    # can't remove user created folder, permission is denied
 
 if __name__ == "__main__":
 	main()
