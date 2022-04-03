@@ -1,12 +1,20 @@
+## Zip Files with Python
 ## https://www.geeksforgeeks.org/working-zip-files-python/
+
+## Encrypt Files with Python
+## https://www.geeksforgeeks.org/encrypt-and-decrypt-files-using-python/
+## For encryption to work, you need to 'pip install cryptography' 
+
 # Note - when outputting a zip file, this will overwrite any pre exisiting files with the same name, be careful!
 
-
-# ---- Zipping 
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # importing required modules
+# zipping modules
 from msilib.schema import Directory
 from zipfile import ZipFile
 import os
+# encryption modules
+from cryptography.fernet import Fernet
 
 
 # -=-=-=-=-=-=-=-
@@ -29,7 +37,9 @@ def get_all_file_paths(inputDirectory):
 	# returning all file paths
 	return file_paths		
 
+
 # -- 
+
 
 # Creating and writing to zip file function
 def create_zip_file(zip_file_output_name, input_file_paths):
@@ -42,6 +52,52 @@ def create_zip_file(zip_file_output_name, input_file_paths):
 
     # print out success
     print('All files zipped successfully!')
+
+
+# --
+
+
+# creating key and writing it to a file
+def create_key(zip_file_output_name_key):
+
+    # key generation
+    key = Fernet.generate_key()
+  
+    # string the key in a file
+    with open(f'{zip_file_output_name_key}.key', 'wb') as filekey:
+        filekey.write(key)
+
+
+# --
+
+
+# encrypt file with previously generated key
+# need to pass the prexisiting user filename var to this function
+def encrypt_zip_with_key(zip_file_output_name_for_encryption):
+
+    # opening the key
+    with open(f'{zip_file_output_name_for_encryption}.key', 'rb') as filekey:
+        key = filekey.read()
+  
+    # using the generated key
+    fernet = Fernet(key)
+  
+    # opening the original file to encrypt
+    # make sure that you are just getting the file name WITHOUT the '.zip' extension at the end
+    with open(f'{zip_file_output_name_for_encryption}.zip', 'rb') as file:
+        original = file.read()
+      
+    # encrypting the file
+    encrypted = fernet.encrypt(original)
+  
+    # opening the file in write mode and 
+    # writing the encrypted data
+    with open(f'encrypted_{zip_file_output_name_for_encryption}.zip', 'wb') as encrypted_file:
+        encrypted_file.write(encrypted)
+
+
+# --
+
 
 # -=-=-=-=-=-=-=-
 ## Variables
@@ -64,13 +120,19 @@ def main():
 	# printing the list of all files to be zipped
     print('Following files will be zipped:')
     for file_name in file_paths:
-	    print(file_name)	
+	    print(file_name)
 
     # having user enter zip file output name 
     what_output_zip_is_named = input('What will the output Zip be called? (THIS WILL OVERWRITE ANY ZIPS WITH THE SAME NAME!!): ')  
 
     # calling zip function to create zip file with previous variables
     create_zip_file(what_output_zip_is_named,file_paths)
+
+    # creating key for encryption
+    create_key(what_output_zip_is_named)
+
+    # encrypting zip file
+    encrypt_zip_with_key(what_output_zip_is_named)
 
 if __name__ == "__main__":
 	main()
